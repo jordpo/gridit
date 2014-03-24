@@ -8,6 +8,7 @@ class BillsController < ApplicationController
     @bill = Bill.new(bill_params)
     if @bill.save
       if @bill.prior
+        # create a new bill for the proceeding month as well
         @predicted = Bill.new(
           bill_period: @bill.bill_period + 1.months,
           prior: false,
@@ -15,8 +16,11 @@ class BillsController < ApplicationController
           )
         @predicted.predict!
         @predicted.save
+        render json: {bills: {bill: @bill, predicted: @predicted}}
+      else
+        # or just return the newly saved bill
+        render json: {bills: {bill: @bill}
       end
-      render json: @bill
     else
       render json: {error: @bill.errors.full_messages.join(', ')}
     end
