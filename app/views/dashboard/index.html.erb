@@ -7,8 +7,8 @@
 <div class="predict_form">
   <h2>Electric Bill</h2>
   <%= form_for :bill do |f| %>
-    <div class="form-group"><%= f.label :actual, "Last Month's Bill" %><%= f.text_field :actual, class: 'form-control' %></div>
-    <div class="form-group"><%= f.label :bill_period %><%= f.date_field :bill_period, class: 'form-control' %></div>
+    <div class="form-group"><%= f.label :actual, "Last Month's Electric Bill" %><%= f.text_field :actual, class: 'form-control' %></div>
+    <div class="form-group"><%= f.label :bill_period, "Electric Bill Period" %><%= f.date_field :bill_period, class: 'form-control' %></div>
     <div class="checkbox"><%= f.label :heat %><%= f.check_box :heat %></div>
     <div class="checkbox"><%= f.label :a_c, 'A/C' %><%= f.check_box :a_c %></div>
     <%= f.hidden_field :utility, value: 'electric' %>
@@ -16,8 +16,8 @@
   <% end %>
   <h2>Gas Bill</h2>
   <%= form_for :bill do |f| %>
-    <div class="form-group"><%= f.label :actual, "Last Month's Bill" %><%= f.text_field :actual, class: 'form-control' %></div>
-    <div class="form-group"><%= f.label :bill_period %><%= f.date_field :bill_period, class: 'form-control' %></div>
+    <div class="form-group"><%= f.label :actual, "Last Month's Gas Bill" %><%= f.text_field :actual, class: 'form-control' %></div>
+    <div class="form-group"><%= f.label :bill_period, "Gas Bill Period" %><%= f.date_field :bill_period, class: 'form-control' %></div>
     <div class="checkbox"><%= f.label :heat %><%= f.check_box :heat %></div>
     <div class="checkbox"><%= f.label :a_c, 'A/C' %><%= f.check_box :a_c %></div>
     <%= f.hidden_field :utility, value: 'gas' %>

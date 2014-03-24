@@ -7,10 +7,13 @@ feature 'Bill Predict' do
 
   scenario 'visitor enters electric and gas bills', :js do
     visit root_path
-    fill_in 'Previous Electric Bill', with: 40
-    fill_in 'Previous Gas Bill', with: 110
-    click_button 'Predict'
-    expect(page).to have_content "You're next month's bills are"
+    sign_in_as(@user)
+    expect(page).to have_content "Electric Bill"
+    expect(page).to have_content "Gas Bill"
+    # fill_in "Last Month's Electric Bill", with: 40
+    # fill_in "Electric Bill Period", with: '03/01/2014'
+    # fill_in "Last Month's Gas Bill", with: 140
+    # fill_in "Gas Bill Period", with: '03/01/2014'
   end
 
 end

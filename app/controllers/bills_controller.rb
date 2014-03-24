@@ -13,7 +13,6 @@ class BillsController < ApplicationController
     end
   end
 
-
   private
   def bill_params
     params.require(:bill).permit(:actual, :bill_period, :heat, :a_c, :utility)
