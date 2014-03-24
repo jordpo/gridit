@@ -11,3 +11,8 @@
  *= require_self
  *= require_tree .
  */
+
+svg {
+  width: 100%;
+  height: 300px;
+}
