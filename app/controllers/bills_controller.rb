@@ -7,6 +7,15 @@ class BillsController < ApplicationController
   def create
     @bill = Bill.new(bill_params)
     if @bill.save
+      if @bill.prior
+        @predicted = Bill.new(
+          bill_period: @bill.bill_period + 1.months,
+          prior: false,
+          utility: @bill.utility
+          )
+        @predicted.predict!
+        @predicted.save
+      end
       render json: @bill
     else
       render json: {error: @bill.errors.full_messages.join(', ')}
@@ -15,6 +24,6 @@ class BillsController < ApplicationController
 
   private
   def bill_params
-    params.require(:bill).permit(:actual, :bill_period, :heat, :a_c, :utility)
+    params.require(:bill).permit(:actual, :bill_period, :prior, :utility)
   end
 end

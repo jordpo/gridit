@@ -7,11 +7,12 @@
 #  actual      :integer
 #  predicted   :integer
 #  bill_period :datetime
-#  heat        :boolean
-#  a_c         :boolean
 #  user_id     :integer
 #  created_at  :datetime
 #  updated_at  :datetime
+#  prior       :boolean
+#  city        :string(255)
+#  state       :string(255)
 #
 
 class Bill < ActiveRecord::Base
