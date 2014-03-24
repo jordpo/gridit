@@ -11,8 +11,7 @@
 #  created_at  :datetime
 #  updated_at  :datetime
 #  prior       :boolean
-#  city        :string(255)
-#  state       :string(255)
+#  temperature :integer
 #
 
 require 'spec_helper'

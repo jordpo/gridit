@@ -11,8 +11,7 @@
 #  created_at  :datetime
 #  updated_at  :datetime
 #  prior       :boolean
-#  city        :string(255)
-#  state       :string(255)
+#  temperature :integer
 #
 
 class Bill < ActiveRecord::Base
@@ -22,7 +21,7 @@ class Bill < ActiveRecord::Base
     response = HTTParty.get("http://api.wunderground.com/api/#{ENV['WUNDERGROUND_API_KEY']}/planner_#{dateRange}/q/#{state}/#{city}.json")
     high_temp = response["trip"]["temp_high"]["avg"]["F"].to_i
     low_temp = response["trip"]["temp_low"]["avg"]["F"].to_i
-    avg_temp = (high_temp + low_temp) / 2
+    self.temperature = (high_temp + low_temp) / 2
   end
 
   def dateRange

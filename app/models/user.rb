@@ -19,6 +19,8 @@
 #  unconfirmed_email      :string(255)
 #  created_at             :datetime
 #  updated_at             :datetime
+#  city                   :string(255)
+#  state                  :string(255)
 #
 
 class User < ActiveRecord::Base

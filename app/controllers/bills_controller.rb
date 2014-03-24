@@ -19,7 +19,7 @@ class BillsController < ApplicationController
         render json: {bills: {bill: @bill, predicted: @predicted}}
       else
         # or just return the newly saved bill
-        render json: {bills: {bill: @bill}
+        render json: {bills: {bill: @bill} }
       end
     else
       render json: {error: @bill.errors.full_messages.join(', ')}
