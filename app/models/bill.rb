@@ -4,14 +4,14 @@
 #
 #  id          :integer          not null, primary key
 #  utility     :string(255)
-#  actual      :integer
-#  predicted   :integer
+#  amount      :float            default(0.0)
 #  bill_period :datetime
 #  user_id     :integer
 #  created_at  :datetime
 #  updated_at  :datetime
 #  prior       :boolean
 #  temperature :integer
+#  prediction  :boolean          default(FALSE)
 #
 
 class Bill < ActiveRecord::Base
@@ -33,4 +33,16 @@ class Bill < ActiveRecord::Base
     end
   end
 
+  def predict!
+    bills = Bill.where(user: user, utility: utility, prediction: false)
+    y_array = bills.map(&:amount)
+    x_array = bills.map(&:temperature)
+    trend_line = LinearRegression.new(x_array, y_array)
+    # Y intercept and slope
+    b = trend_line.y_intercept
+    m = trend_line.slope
+    # Use the prior amount to calculate future one
+    self.amount = temperature * m + b
+    self.prediction = true
+  end
 end

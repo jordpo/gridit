@@ -4,14 +4,14 @@
 #
 #  id          :integer          not null, primary key
 #  utility     :string(255)
-#  actual      :integer
-#  predicted   :integer
+#  amount      :float            default(0.0)
 #  bill_period :datetime
 #  user_id     :integer
 #  created_at  :datetime
 #  updated_at  :datetime
 #  prior       :boolean
 #  temperature :integer
+#  prediction  :boolean          default(FALSE)
 #
 
 require 'spec_helper'

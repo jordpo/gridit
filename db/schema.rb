@@ -11,21 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140324191501) do
+ActiveRecord::Schema.define(version: 20140324202530) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "bills", force: true do |t|
     t.string   "utility"
-    t.integer  "actual"
-    t.integer  "predicted"
+    t.float    "amount",      default: 0.0
     t.datetime "bill_period"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "prior"
     t.integer  "temperature"
+    t.boolean  "prediction",  default: false
   end
 
   add_index "bills", ["user_id"], name: "index_bills_on_user_id", using: :btree
