@@ -9,6 +9,8 @@ gem 'jquery-rails'
 gem 'jbuilder', '~> 1.2'
 gem 'devise'
 gem 'd3-rails'
+gem 'sendgrid'
+gem 'pony'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
