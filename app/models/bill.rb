@@ -45,4 +45,10 @@ class Bill < ActiveRecord::Base
     self.amount = temperature * m + b
     self.prediction = true
   end
+
+  def prior?
+    month = Time.now.month
+    year = Time.now.year
+    bill_period.month == (month - 1) && bill_period.year == year
+  end
 end
