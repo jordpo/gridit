@@ -1,2 +1,28 @@
-<h1>Dashboard#index</h1>
-<p>Find me in app/views/dashboard/index.html.erb</p>
+<h1>What does this app do?</h1>
+<p>Using the correlation that gas and electric bills tend to have with weather
+  temperature, this app simply applies linear regression to 'predict' what your next
+  next month's bill will be. Sign up for more accurate predictions and a helpful historical bill tracker.</p>
+
+<h1>What are my bills for next month?</h1>
+<div class="predict_form">
+  <h2>Electric Bill</h2>
+  <%= form_for :bill do |f| %>
+    <div class="form-group"><%= f.label :actual, "Last Month's Bill" %><%= f.text_field :actual, class: 'form-control' %></div>
+    <div class="form-group"><%= f.label :bill_period %><%= f.date_field :bill_period, class: 'form-control' %></div>
+    <div class="checkbox"><%= f.label :heat %><%= f.check_box :heat %></div>
+    <div class="checkbox"><%= f.label :a_c, 'A/C' %><%= f.check_box :a_c %></div>
+    <%= f.hidden_field :utility, value: 'electric' %>
+    <%= f.submit 'Predict', class: 'form-control'%>
+  <% end %>
+  <h2>Gas Bill</h2>
+  <%= form_for :bill do |f| %>
+    <div class="form-group"><%= f.label :actual, "Last Month's Bill" %><%= f.text_field :actual, class: 'form-control' %></div>
+    <div class="form-group"><%= f.label :bill_period %><%= f.date_field :bill_period, class: 'form-control' %></div>
+    <div class="checkbox"><%= f.label :heat %><%= f.check_box :heat %></div>
+    <div class="checkbox"><%= f.label :a_c, 'A/C' %><%= f.check_box :a_c %></div>
+    <%= f.hidden_field :utility, value: 'gas' %>
+    <%= f.submit 'Predict', class: 'form-control'%>
+  <% end %>
+</div>
+
+<br><br>

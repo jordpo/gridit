@@ -2,15 +2,39 @@
 <html>
 <head>
   <title>GridIt</title>
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <%= stylesheet_link_tag    "application", media: "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
-<p class="notice"><%= notice %></p>
-<p class="alert"><%= alert %></p>
+<div class="container">
+  <div class="navbar">
+    <div class="container-fluid">
+     <!-- User NAV -->
+     <ul class="nav nav-tabs nav-justified">
+      <li><%= link_to 'GridIt', root_path %></li>
+      <% if user_signed_in? %>
+        <li>Signed in as <%= current_user.email %></li>
+        <li><%= link_to 'Sign Out', destroy_user_session_path, method: :delete %></li>
+      <% else %>
+        <li><%=  link_to 'Sign In', new_user_session_path %></li>
+      <% end %>
+     </ul>
+    </div>
+  </div>
+  <div class="jumbotron">
+    <h1>GridIt</h1>
+    <p>A helpful utility bill tracker and predictor.</p>
+  </div>
 
-<%= yield %>
+  <p class="notice"><%= notice %></p>
+  <p class="alert"><%= alert %></p>
 
+  <%= yield %>
+
+</div>
 </body>
 </html>
