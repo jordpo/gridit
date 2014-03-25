@@ -51,7 +51,9 @@ describe User do
     it 'is invalid without a state abbreviation not name' do
       valid_user = build(:user, state: "CT")
       invalid_user = build(:user, state: "Connecticut")
+      invalid_user2 = build(:user, state: "CTonnecticut")
       expect(invalid_user).to_not be_valid
+      expect(invalid_user2).to_not be_valid
       expect(valid_user).to be_valid
     end
   end
