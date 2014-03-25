@@ -6,6 +6,7 @@ require 'rspec/autorun'
 require 'simplecov'
 require 'capybara/poltergeist'
 require 'capybara/rspec'
+require 'webmock/rspec'
 
 SimpleCov.start 'rails'
 Capybara.javascript_driver = :poltergeist

@@ -51,6 +51,7 @@ group :test do
   gem 'guard-rspec'
   gem 'launchy'
   gem 'poltergeist'
+  gem 'webmock'
 end
 
 group :production do

@@ -5,7 +5,7 @@ feature 'Bill Predict' do
     @user = FactoryGirl.create(:user)
   end
 
-  scenario 'visitor enters electric and gas bills', :js do
+  scenario 'visitor enters electric and gas bills' do
     visit root_path
     sign_in_as(@user)
     expect(page).to have_content "Electric Bill"

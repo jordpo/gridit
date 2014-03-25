@@ -30,4 +30,8 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :bills
+
+  def ready?(utility)
+    bills.where(utility: utility).count >= 3
+  end
 end

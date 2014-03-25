@@ -24,7 +24,17 @@
 #
 
 require 'spec_helper'
-
+require 'pry'
 describe User do
-  pending "add some examples to (or delete) #{__FILE__}"
+  before :each do
+    @jord = FactoryGirl.create(:user)
+    3.times { FactoryGirl.create(:gas, user: @jord) }
+    2.times { FactoryGirl.create(:electric, user: @jord) }
+  end
+  describe '#ready?' do
+    it 'returns true if the user has 3 or more of bills' do
+      expect(@jord.ready?('gas')).to eq true
+      expect(@jord.ready?('electric')).to eq false
+    end
+  end
 end

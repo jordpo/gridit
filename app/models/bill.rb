@@ -9,7 +9,6 @@
 #  user_id     :integer
 #  created_at  :datetime
 #  updated_at  :datetime
-#  prior       :boolean
 #  temperature :integer
 #  prediction  :boolean          default(FALSE)
 #
@@ -43,6 +42,7 @@ class Bill < ActiveRecord::Base
     m = trend_line.slope
     # Use the prior amount to calculate future one
     self.amount = temperature * m + b
+    self.bill_period = Date.today
     self.prediction = true
   end
 

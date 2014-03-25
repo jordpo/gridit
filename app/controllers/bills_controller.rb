@@ -10,7 +10,7 @@ class BillsController < ApplicationController
     # Get the avg temp for the month
     @bill.get_temp(current_user.city, current_user.state)
     if @bill.save
-      if @bill.prior?
+      if @bill.prior? && current_user.ready?
         # create a new bill for the proceeding month as well
         @predicted = Bill.new(
           bill_period: @bill.bill_period + 1.months,
