@@ -20,7 +20,11 @@
     .view
       %h1 View
       %p Here is your predicted electricity bill for next month. From here, you can add the actual amount that you paid, as well as view historical bills.
-      = render partial: 'form', locals: {utility: 'electric', submit_text: 'Add electricity bill', prior: false}
+      - if no_current_actual?(@electric)
+        = render partial: 'form', locals: {utility: 'electric', submit_text: 'Add electricity bill', prior: false}
+      - else
+        %p You already saved last month's bill!
+
       .electric-bills
         %h1 Historical Electricity Bills
         %svg.electric-graph
@@ -57,7 +61,11 @@
     .view
       %h1 View
       %p Here is your predicted gas bill for next month. From here, you can add the actual amount that you paid, as well as view historical bills.
-      = render partial: 'form', locals: {utility: 'gas', submit_text: 'Add gas bill', prior: false}
+      - if no_current_actual?(@gas)
+        = render partial: 'form', locals: {utility: 'gas', submit_text: 'Add gas bill', prior: false}
+      - else
+        %p You already saved last month's bill!
+
       .gas-bills
         %h1 Historical Gas Bills
         %svg.gas-graph
