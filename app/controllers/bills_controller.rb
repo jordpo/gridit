@@ -1,6 +1,6 @@
 class BillsController < ApplicationController
   def index
-    @bills = Bill.order(bill_period: :desc)
+    @bills = current_user.bills.order(bill_period: :desc)
     respond_to do |f|
       f.html
       f.json { render @bills }

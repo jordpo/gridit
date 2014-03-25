@@ -5,16 +5,17 @@
 .row
   .col-md-6
     %h2 Electric Bill
-    .setup
-      %h1 Setup
-      %p Let's get started. First add three past electricity bills and try to pick at least one in the summer and one in the winter.
-      - 3.times do
-        = render partial: 'form', locals: {utility: 'electric', submit_text: 'Add electricity bill', prior: false}
-
-    .predict
-      %h1 Predict
-      %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
-      = render partial: 'form', locals: {utility: 'electric', submit_text: 'Predict electricity bill', prior: true}
+    - if !current_user.ready?('electric')
+      .setup
+        %h1 Setup
+        %p Let's get started. First add three past electricity bills and try to pick at least one in the summer and one in the winter.
+        - 3.times do
+          = render partial: 'form', locals: {utility: 'electric', submit_text: 'Add electricity bill', prior: false}
+    - if to_predict?(@electric)
+      .predict
+        %h1 Predict
+        %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
+        = render partial: 'form', locals: {utility: 'electric', submit_text: 'Predict electricity bill', prior: true}
 
     .view
       %h1 View
@@ -26,22 +27,32 @@
         %table.table
           %tr
             %th Month
-            %th Actual
-            %th Predicted
-            %th Difference
+            %th Amount
+            %th Prediction
+
+          - @electric.each do |bill|
+            %tr
+              %td #{bill.bill_period.month}/#{bill.bill_period.year}
+              %td $#{bill.amount}
+              %td
+                - if bill.prediction
+                  Yes
+                -else
+                  No
 
   .col-md-6
     %h2 Gas Bill
-    .setup
-      %h1 Setup
-      %p Let's get started. First add three past gas bills and try to pick at least one in the summer and one in the winter.
-      - 3.times do
-        = render partial: 'form', locals: {utility: 'gas', submit_text: 'Add gas bill', prior: false}
-
-    .predict
-      %h1 Predict
-      %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
-      = render partial: 'form', locals: {utility: 'gas', submit_text: 'Predict gas bill', prior: true}
+    - if current_user.ready?('gas')
+      .setup
+        %h1 Setup
+        %p Let's get started. First add three past gas bills and try to pick at least one in the summer and one in the winter.
+        - 3.times do
+          = render partial: 'form', locals: {utility: 'gas', submit_text: 'Add gas bill', prior: false}
+    - if to_predict?(@gas)
+      .predict
+        %h1 Predict
+        %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
+        = render partial: 'form', locals: {utility: 'gas', submit_text: 'Predict gas bill', prior: true}
 
     .view
       %h1 View
@@ -53,9 +64,18 @@
         %table.table
           %tr
             %th Month
-            %th Actual
-            %th Predicted
-            %th Difference
+            %th Amount
+            %th Prediction
+
+          - @gas.each do |bill|
+            %tr
+              %td #{bill.bill_period.month}/#{bill.bill_period.year}
+              %td $#{bill.amount}
+              %td
+                - if bill.prediction
+                  Yes
+                - else
+                  No
 
 %br
 %br
