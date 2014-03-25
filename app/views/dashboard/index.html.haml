@@ -13,8 +13,10 @@
         .setup
           %h1 Setup
           %p Let's get started. First add three past electricity bills and try to pick at least one in the summer and one in the winter.
-          - 3.times do
-            = render partial: 'form', locals: {utility: 'electric', submit_text: 'Add electricity bill', prior: false}
+          - setup_left(@electric).times do |i|
+            .form
+              %p.electric-left #{setup_left(@electric) - i} bill(s) to go!
+              = render partial: 'form', locals: {utility: 'electric', submit_text: 'Add electricity bill', prior: false}
       - if to_predict?(@electric)
         .predict
           %h1 Predict
@@ -55,8 +57,10 @@
         .setup
           %h1 Setup
           %p Let's get started. First add three past gas bills and try to pick at least one in the summer and one in the winter.
-          - 3.times do
-            = render partial: 'form', locals: {utility: 'gas', submit_text: 'Add gas bill', prior: false}
+          - setup_left(@gas).times do |i|
+            .form
+              %p.gas-left #{setup_left(@gas) - i} bill(s) to go!
+              = render partial: 'form', locals: {utility: 'gas', submit_text: 'Add gas bill', prior: false}
       - if to_predict?(@gas)
         .predict
           %h1 Predict

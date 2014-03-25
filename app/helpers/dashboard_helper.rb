@@ -18,4 +18,8 @@ module DashboardHelper
     end
     return true
   end
+
+  def setup_left(bills)
+    3 - bills.count
+  end
 end

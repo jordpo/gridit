@@ -113,8 +113,8 @@ GridIt.saveBill = function (event) {
     // TODO - call method to redraw graph
 
     // Clean up
-    $form.hide();
-    $form.next().show();
+    $form.parent().hide();
+    $form.parent().next().show();
   });
 };
 

@@ -20,7 +20,7 @@ svg {
 
 
 /* Only show one form in setup at a time */
-.setup form:nth-child(n+4) {
+.setup .form:nth-child(n+4) {
   display: none;
 }
 
@@ -59,4 +59,8 @@ svg {
 
 .alert {
   color: #FF0000;
+}
+
+.gas-left, .electric-left {
+  color: tomato;
 }
