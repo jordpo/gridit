@@ -43,7 +43,20 @@ svg {
   cursor: pointer;
 }
 
+/* Text styling */
 .info {
   font-style: italic;
   font-size: .8em;
+}
+
+.electric-prediction, .gas-prediction {
+  color: tomato;
+}
+
+.notice {
+  color: #009900;
+}
+
+.alert {
+  color: #FF0000;
 }

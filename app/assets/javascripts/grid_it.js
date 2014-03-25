@@ -102,13 +102,11 @@ GridIt.saveBill = function (event) {
         $('p.gas-prediction').html("Your predicted amount is $" + predicted.amount +
           " with avg monthly temperature of " + predicted.temperature + " degrees.");
         $('.gas-bills .table tr:eq(0)').after(predicted.renderRow());
-        $('.gas-container .view form').hide();
       } else {
         GridIt.electricBills.push(predicted);
         $('p.electric-prediction').html("Your predicted amount is $" + predicted.amount +
           " with avg monthly temperature of " + predicted.temperature + " degrees.");
         $('.electric-bills .table tr:eq(0)').after(predicted.renderRow());
-        $('.electric-container .view form').hide();
       }
     }
 
