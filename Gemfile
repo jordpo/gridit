@@ -12,6 +12,7 @@ gem 'd3-rails'
 gem 'sendgrid'
 gem 'pony'
 gem 'httparty'
+gem 'haml-rails'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
