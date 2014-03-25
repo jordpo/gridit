@@ -17,3 +17,7 @@
 
 
 var GridIt = GridIt || {};
+
+$(function () {
+  GridIt.init();
+});

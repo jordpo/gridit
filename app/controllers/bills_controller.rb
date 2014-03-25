@@ -13,11 +13,10 @@ class BillsController < ApplicationController
     # Get the avg temp for the month
     @bill.get_temp(current_user.city, current_user.state)
     if @bill.save
-      if @bill.prior? && current_user.ready?
+      if @bill.prior? && current_user.ready?(@bill.utility)
         # create a new bill for the proceeding month as well
         @predicted = Bill.new(
           bill_period: @bill.bill_period + 1.months,
-          prior: false,
           utility: @bill.utility,
           user: current_user
           )
@@ -25,10 +24,10 @@ class BillsController < ApplicationController
         # Model method to calculate and assigned predicted amount
         @predicted.predict!
         @predicted.save
-        render json: {bills: {bill: @bill, predicted: @predicted}}
+        render json: {bill: @bill, predicted: @predicted}
       else
         # or just return the newly saved bill
-        render json: {bills: {bill: @bill} }
+        render json: {bill: @bill}
       end
     else
       render json: {error: @bill.errors.full_messages.join(', ')}
@@ -37,6 +36,6 @@ class BillsController < ApplicationController
 
   private
   def bill_params
-    params.require(:bill).permit(:actual, :bill_period, :prior, :utility)
+    params.require(:bill).permit(:amount, :bill_period, :utility)
   end
 end

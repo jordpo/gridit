@@ -44,7 +44,7 @@ class Bill < ActiveRecord::Base
     b = trend_line.y_intercept
     m = trend_line.slope
     # Use the prior amount to calculate future one
-    self.amount = temperature * m + b
+    self.amount = (temperature * m + b).round(2)
     self.bill_period = Date.today
     self.prediction = true
   end

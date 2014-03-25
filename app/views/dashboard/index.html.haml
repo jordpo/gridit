@@ -25,19 +25,21 @@
       - else
         %p You already saved last month's bill!
 
-      .electric-bills
+      .electric-bills{data: @electric.to_json }
         %h1 Historical Electricity Bills
         %svg.electric-graph
         %table.table
           %tr
             %th Month
             %th Amount
+            %th Temperature
             %th Prediction
 
           - @electric.each do |bill|
             %tr
               %td #{bill.bill_period.month}/#{bill.bill_period.year}
               %td $#{bill.amount}
+              %td #{bill.temperature} F
               %td
                 - if bill.prediction
                   Yes
@@ -46,7 +48,7 @@
 
   .col-md-6
     %h2 Gas Bill
-    - if current_user.ready?('gas')
+    - if !current_user.ready?('gas')
       .setup
         %h1 Setup
         %p Let's get started. First add three past gas bills and try to pick at least one in the summer and one in the winter.
@@ -66,19 +68,21 @@
       - else
         %p You already saved last month's bill!
 
-      .gas-bills
+      .gas-bills{data: @gas.to_json }
         %h1 Historical Gas Bills
         %svg.gas-graph
         %table.table
           %tr
             %th Month
             %th Amount
+            %th Temperature
             %th Prediction
 
           - @gas.each do |bill|
             %tr
               %td #{bill.bill_period.month}/#{bill.bill_period.year}
               %td $#{bill.amount}
+              %td #{bill.temperature} F
               %td
                 - if bill.prediction
                   Yes
