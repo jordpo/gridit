@@ -16,3 +16,7 @@ svg {
   width: 100%;
   height: 300px;
 }
+
+.setup form:nth-child(n+4) {
+  display: none;
+}

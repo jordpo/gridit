@@ -1,7 +1,0 @@
-<%= form_for :bill do |f| %>
-  <div class="form-group"><%= f.label :amount %><%= f.text_field :amount, class: 'form-control' %></div>
-  <div class="form-group"><%= f.label :bill_period %><%= f.date_field :bill_period, class: 'form-control' %></div>
-  <%= f.hidden_field :utility, value: utility %>
-  <%= f.hidden_field :prior, value: prior %>
-  <%= f.submit submit_text, class: 'form-control'%>
-<% end %>
