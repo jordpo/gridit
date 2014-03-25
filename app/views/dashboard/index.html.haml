@@ -1,93 +1,101 @@
 %h1 What does this app do?
 %p Using the correlation that gas and electric bills tend to have with weather temperature, this app simply applies linear regression to 'predict' what your next next month's bill will be. The more you use it, the more accurate predictions will be, as well as taking full advantage of the historical bill tracker.
 
+.loader
+
 %h1 What are my bills for next month?
 .row
   .col-md-6
-    %h2 Electric Bill
-    - if !current_user.ready?('electric')
-      .setup
-        %h1 Setup
-        %p Let's get started. First add three past electricity bills and try to pick at least one in the summer and one in the winter.
-        - 3.times do
+    %h2.electric-show Electric Bill
+    %p.info (click to show detail)
+    .electric-container
+      - if !current_user.ready?('electric')
+        .setup
+          %h1 Setup
+          %p Let's get started. First add three past electricity bills and try to pick at least one in the summer and one in the winter.
+          - 3.times do
+            = render partial: 'form', locals: {utility: 'electric', submit_text: 'Add electricity bill', prior: false}
+      - if to_predict?(@electric)
+        .predict
+          %h1 Predict
+          %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
+          = render partial: 'form', locals: {utility: 'electric', submit_text: 'Predict electricity bill', prior: true}
+
+      .view
+        %h1 View
+        %p Here is your predicted electricity bill for next month. From here, you can add the actual amount that you paid, as well as view historical bills.
+        %p.electric-prediction
+        - if no_current_actual?(@electric)
           = render partial: 'form', locals: {utility: 'electric', submit_text: 'Add electricity bill', prior: false}
-    - if to_predict?(@electric)
-      .predict
-        %h1 Predict
-        %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
-        = render partial: 'form', locals: {utility: 'electric', submit_text: 'Predict electricity bill', prior: true}
+        - else
+          %p You already saved last month's bill!
 
-    .view
-      %h1 View
-      %p Here is your predicted electricity bill for next month. From here, you can add the actual amount that you paid, as well as view historical bills.
-      - if no_current_actual?(@electric)
-        = render partial: 'form', locals: {utility: 'electric', submit_text: 'Add electricity bill', prior: false}
-      - else
-        %p You already saved last month's bill!
-
-      .electric-bills{data: @electric.to_json }
-        %h1 Historical Electricity Bills
-        %svg.electric-graph
-        %table.table
-          %tr
-            %th Month
-            %th Amount
-            %th Temperature
-            %th Prediction
-
-          - @electric.each do |bill|
+        .electric-bills{data: @electric.to_json }
+          %h1 Historical Electricity Bills
+          %svg.electric-graph
+          %table.table
             %tr
-              %td #{bill.bill_period.month}/#{bill.bill_period.year}
-              %td $#{bill.amount}
-              %td #{bill.temperature} F
-              %td
-                - if bill.prediction
-                  Yes
-                -else
-                  No
+              %th Month
+              %th Amount
+              %th Temperature
+              %th Prediction
+
+            - @electric.each do |bill|
+              %tr
+                %td #{bill.bill_period.month}/#{bill.bill_period.year}
+                %td $#{bill.amount}
+                %td #{bill.temperature} F
+                %td
+                  - if bill.prediction
+                    Yes
+                  -else
+                    No
 
   .col-md-6
-    %h2 Gas Bill
-    - if !current_user.ready?('gas')
-      .setup
-        %h1 Setup
-        %p Let's get started. First add three past gas bills and try to pick at least one in the summer and one in the winter.
-        - 3.times do
+    %h2.gas-show Gas Bill
+    %p.info (click to show detail)
+    .gas-container
+      - if !current_user.ready?('gas')
+        .setup
+          %h1 Setup
+          %p Let's get started. First add three past gas bills and try to pick at least one in the summer and one in the winter.
+          - 3.times do
+            = render partial: 'form', locals: {utility: 'gas', submit_text: 'Add gas bill', prior: false}
+      - if to_predict?(@gas)
+        .predict
+          %h1 Predict
+          %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
+          = render partial: 'form', locals: {utility: 'gas', submit_text: 'Predict gas bill', prior: true}
+
+      .view
+        %h1 View
+        %p Here is your predicted gas bill for next month. From here, you can add the actual amount that you paid, as well as view historical bills.
+        %p.gas-prediction
+        - if no_current_actual?(@gas)
           = render partial: 'form', locals: {utility: 'gas', submit_text: 'Add gas bill', prior: false}
-    - if to_predict?(@gas)
-      .predict
-        %h1 Predict
-        %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
-        = render partial: 'form', locals: {utility: 'gas', submit_text: 'Predict gas bill', prior: true}
+        - else
+          %p You already saved last month's bill!
 
-    .view
-      %h1 View
-      %p Here is your predicted gas bill for next month. From here, you can add the actual amount that you paid, as well as view historical bills.
-      - if no_current_actual?(@gas)
-        = render partial: 'form', locals: {utility: 'gas', submit_text: 'Add gas bill', prior: false}
-      - else
-        %p You already saved last month's bill!
-
-      .gas-bills{data: @gas.to_json }
-        %h1 Historical Gas Bills
-        %svg.gas-graph
-        %table.table
-          %tr
-            %th Month
-            %th Amount
-            %th Temperature
-            %th Prediction
-
-          - @gas.each do |bill|
+        .gas-bills{data: @gas.to_json }
+          %h1 Historical Gas Bills
+          %svg.gas-graph
+          %table.table
             %tr
-              %td #{bill.bill_period.month}/#{bill.bill_period.year}
-              %td $#{bill.amount}
-              %td #{bill.temperature} F
-              %td
-                - if bill.prediction
-                  Yes
-                - else
-                  No
+              %th Month
+              %th Amount
+              %th Temperature
+              %th Prediction
+
+            - @gas.each do |bill|
+              %tr
+                %td #{bill.bill_period.month}/#{bill.bill_period.year}
+                %td $#{bill.amount}
+                %td #{bill.temperature} F
+                %td
+                  - if bill.prediction
+                    Yes
+                  - else
+                    No
 
 %br
 %br

@@ -11,6 +11,14 @@ GridIt.init = function () {
   // Attach event listeners here
 
   $('form').on('submit', GridIt.saveBill );
+  $('.electric-show').on('click', function (event) {
+    event.preventDefault();
+    $('.electric-container').toggle();
+  });
+  $('.gas-show').on('click', function (event) {
+    event.preventDefault();
+    $('.gas-container').toggle();
+  });
 };
 
 // Retrieve the list of bills from DOM
@@ -24,6 +32,7 @@ GridIt.getGas = function () {
   return true;
 };
 
+// In case I need to sort the data
 GridIt.compare = function (a, b) {
   if (a.bill_period > b.bill_period)
      return -1;
@@ -59,8 +68,13 @@ GridIt.saveBill = function (event) {
       bill_period : bill.bill_period,
       utility : bill.utility
       }
+    },
+    beforeSend: function () {
+      $('.loader').html('Getting right back to you.');
     }
   }).done(function (data) {
+    $('.loader').html('');
+
     bill.id = data.bill.id;
     bill.temperature = data.bill.temperature;
     bill.prediction = data.bill.prediction;
@@ -68,10 +82,10 @@ GridIt.saveBill = function (event) {
     // Add bill to data collection
     if (bill.utility === 'gas') {
       GridIt.gasBills.push(bill);
-      $('.gas-bills .table').prepend(bill.renderRow());
+      $('.gas-bills .table tr:eq(0)').after(bill.renderRow());
     } else {
       GridIt.electricBills.push(bill);
-      $('.electric-bills .table').prepend(bill.renderRow());
+      $('.electric-bills .table tr:eq(0)').after(bill.renderRow());
     }
 
     // create a new predicted bill if received
@@ -85,10 +99,16 @@ GridIt.saveBill = function (event) {
       // Add predicted to collection
       if (predicted.utility === 'gas') {
         GridIt.gasBills.push(predicted);
-        $('.gas-bills .table').prepend(predicted.renderRow());
+        $('p.gas-prediction').html("Your predicted amount is $" + predicted.amount +
+          " with avg monthly temperature of " + predicted.temperature + " degrees.");
+        $('.gas-bills .table tr:eq(0)').after(predicted.renderRow());
+        $('.gas-container .view form').hide();
       } else {
         GridIt.electricBills.push(predicted);
-        $('.electric-bills .table').prepend(predicted.renderRow());
+        $('p.electric-prediction').html("Your predicted amount is $" + predicted.amount +
+          " with avg monthly temperature of " + predicted.temperature + " degrees.");
+        $('.electric-bills .table tr:eq(0)').after(predicted.renderRow());
+        $('.electric-container .view form').hide();
       }
     }
 

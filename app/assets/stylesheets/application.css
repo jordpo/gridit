@@ -23,3 +23,27 @@ svg {
 .setup form:nth-child(n+4) {
   display: none;
 }
+
+.loader {
+  position: fixed;
+  z-index: 2;
+  font-size: 2em;
+  color: tomato;
+  top: 300px;
+  left: 200px;
+  width: 300px;
+  background-color: #000;
+}
+
+.gas-container, .electric-container {
+  display: none;
+}
+
+.gas-show:hover, .electric-show:hover {
+  cursor: pointer;
+}
+
+.info {
+  font-style: italic;
+  font-size: .8em;
+}
