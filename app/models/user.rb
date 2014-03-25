@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
 
   validates :city, presence: true
   validates :state, presence: true
-  validates :state, format: { with: /[A-Z][A-Z]/, message: 'Use state abbreviations.'}
+  validates :state, format: { with: /\b[A-Z][A-Z]\b/, message: 'Use state abbreviations.'}
 
   def ready?(utility)
     bills.where(utility: utility).count >= 3
