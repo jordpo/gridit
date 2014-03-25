@@ -15,6 +15,9 @@
 
 class Bill < ActiveRecord::Base
   belongs_to :user
+  validates :amount, presence: true
+  validates :bill_period, presence: true
+  validates :temperature, presence: true
 
   def get_temp(city, state)
     response = HTTParty.get("http://api.wunderground.com/api/#{ENV['WUNDERGROUND_API_KEY']}/planner_#{dateRange}/q/#{state}/#{city}.json")

@@ -59,4 +59,17 @@ describe Bill do
       expect(@gas5.prior?).to eq true
     end
   end
+
+  describe 'validations' do
+    it 'is invalid without an amount, bill_period, and temp' do
+      invalid_bill = build(:gas, amount: nil)
+      invalid_bill2 = build(:gas, bill_period: nil)
+      invalid_bill3 = build(:gas, temperature: nil)
+      valid_bill = build(:gas)
+      expect(invalid_bill).to_not be_valid
+      expect(invalid_bill2).to_not be_valid
+      expect(invalid_bill3).to_not be_valid
+      expect(valid_bill).to be_valid
+    end
+  end
 end

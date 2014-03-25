@@ -37,4 +37,22 @@ describe User do
       expect(@jord.ready?('electric')).to eq false
     end
   end
+
+  describe 'validations' do
+    it 'is invalid without a state and city' do
+      invalid_user = build(:user, city: nil)
+      invalid_user2 = build(:user, state: nil)
+      valid_user = build(:user, state: "CT", city: "Hartford")
+      expect(invalid_user).to_not be_valid
+      expect(invalid_user2).to_not be_valid
+      expect(valid_user).to be_valid
+    end
+
+    it 'is invalid without a state abbreviation not name' do
+      valid_user = build(:user, state: "CT")
+      invalid_user = build(:user, state: "Connecticut")
+      expect(invalid_user).to_not be_valid
+      expect(valid_user).to be_valid
+    end
+  end
 end

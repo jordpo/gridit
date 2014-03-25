@@ -31,6 +31,10 @@ class User < ActiveRecord::Base
 
   has_many :bills
 
+  validates :city, presence: true
+  validates :state, presence: true
+  validates :state, format: { with: /[A-Z][A-Z]/, message: 'Use state abbreviations.'}
+
   def ready?(utility)
     bills.where(utility: utility).count >= 3
   end
