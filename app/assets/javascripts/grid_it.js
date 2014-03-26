@@ -61,10 +61,12 @@ GridIt.saveBill = function (event) {
   var $form = $(event.target),
     $amount = $form.find("#bill_amount"),
     $bill_period = $form.find("#bill_bill_period"),
-    $utility = $form.find("#bill_utility");
+    $utility = $form.find("#bill_utility"),
+    formType = this.classList[1],
+    $node = $(this);
 
   // Run validation check
-  if (!GridIt.validations($amount.val(), $bill_period.val(), $utility.val())) {
+  if (!GridIt.validations($amount.val(), $bill_period.val(), $utility.val(), formType)) {
     return false;
   }
 
@@ -128,40 +130,76 @@ GridIt.saveBill = function (event) {
     // Clean up
     $form.parent().hide();
     $form.parent().next().show();
+
+    // Show predict if ready
+    GridIt.hideSetup($node.parent());
   });
 };
 
-GridIt.validations = function (amount, bill_period, utility) {
+GridIt.validations = function (amount, bill_period, utility, type) {
   var bills = JSON.parse($('.' + utility + '-graph').attr('data')),
-    bill;
-  // Convert strings to correct data type explicitly
-  amount = parseFloat(amount);
-  bill_period = new Date(bill_period);
+    bill, date, bill_date;
 
-  // Check to see if there is already a bill for that month
-  bill = $.grep(bills, function (n, i) {
-    return new Date(n.bill_period).getMonth() === bill_period.getMonth();
-  });
-
-  // Both fields need to be populated
+  // First check that fields are populated at all
   if (amount === '' || bill_period === '') {
     $('p.alert').html('Need to populate both the amount and bill period.');
     return false;
-    // Amount needs to be a correct format
-  } else if (typeof amount !== 'number' || amount < 0 ) {
+  }
+
+  // Convert strings to correct data type explicitly
+  amount = parseFloat(amount);
+  date = new Date(bill_period);
+  // Fix the date - one day ahead
+  date.setDate(date.getDate() + 1);
+
+  // Check to see if there is already a bill for that month
+  bill = $.grep(bills, function (n, i) {
+    bill_date = new Date(n.bill_period);
+    bill_date.setDate(bill_date.getDate() + 1);
+    return bill_date.getMonth() === date.getMonth();
+  });
+
+  // General validations
+  // Amount needs to be the correct format
+  if (typeof amount !== 'number' || amount < 0 ) {
     $('p.alert').html('Amount needs to be a positive number.');
     return false;
     // Bill_period needs to be earlier than current month
-  } else if (bill_period > Date.now()) {
+  } else if (date > Date.now()) {
     $('p.alert').html('Bill period should be no later than last month.');
     return false;
   } else if ( bill[0] !== undefined ) {
     $('p.alert').html('Bill for this month was already saved.');
     return false;
-  } else {
-    // If all validations pass
-    $('p.alert').html('');
-    return true;
+  }
+
+  // debugger
+  // Form specific validations
+  if (type === 'setup-form') {
+    if ( date.getMonth() === new Date().getMonth() - 1) {
+      $('p.alert').html("Bill can't be the previous month for the setup.");
+      return false;
+    } else if ( ((new Date() - date) / (1000 * 60 * 60 * 24 * 365.26)) > 1) {
+      $('p.alert').html("Bill should be from within a year.");
+      return false;
+    }
+
+  }
+  if (type === 'predict-form') {
+    if ( date.getMonth() !== new Date().getMonth() - 1) {
+      $('p.alert').html("Bill must be from the previous month in order to predict.");
+      return false;
+    }
+  }
+  // If all pass
+  $('p.alert').html('');
+  return true;
+};
+
+GridIt.hideSetup = function ($node) {
+  if ($node.parent().find('.setup-form').length === 1) {
+    $node.hide();
+    $node.parent().find('.predict').removeClass('hide');
   }
 };
 

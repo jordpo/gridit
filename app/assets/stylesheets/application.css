@@ -41,6 +41,10 @@
   cursor: pointer;
 }
 
+.hide {
+  display: none;
+}
+
 /* Text styling */
 .info {
   font-style: italic;

@@ -18,14 +18,21 @@
             %h1 Setup
             %p Let's get started. First add three past electricity bills and try to pick at least one in the summer and one in the winter.
             - setup_left(@electric).times do |i|
-              .form
+              .form.setup-form
                 %p.electric-left #{setup_left(@electric) - i} bill(s) to go!
                 = render partial: 'form', locals: {utility: 'electric', submit_text: 'Add electricity bill', prior: false}
         - if to_predict?(@electric) && current_user.ready?('electric')
           .predict
             %h1 Predict
             %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
-            = render partial: 'form', locals: {utility: 'electric', submit_text: 'Predict electricity bill', prior: true}
+            .form.predict-form
+              = render partial: 'form', locals: {utility: 'electric', submit_text: 'Predict electricity bill', prior: true}
+        -else
+          .predict.hide
+            %h1 Predict
+            %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
+            .form.predict-form
+              = render partial: 'form', locals: {utility: 'electric', submit_text: 'Predict electricity bill', prior: true}
 
         .view
           %h1 View
@@ -62,14 +69,21 @@
             %h1 Setup
             %p Let's get started. First add three past gas bills and try to pick at least one in the summer and one in the winter.
             - setup_left(@gas).times do |i|
-              .form
+              .form.setup-form
                 %p.gas-left #{setup_left(@gas) - i} bill(s) to go!
                 = render partial: 'form', locals: {utility: 'gas', submit_text: 'Add gas bill', prior: false}
         - if to_predict?(@gas) && current_user.ready?('gas')
           .predict
             %h1 Predict
             %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
-            = render partial: 'form', locals: {utility: 'gas', submit_text: 'Predict gas bill', prior: true}
+            .form.predict-form
+              = render partial: 'form', locals: {utility: 'gas', submit_text: 'Predict gas bill', prior: true}
+        - else
+          .predict.hide
+            %h1 Predict
+            %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
+            .form.predict-form
+              = render partial: 'form', locals: {utility: 'gas', submit_text: 'Predict gas bill', prior: true}
 
         .view
           %h1 View
