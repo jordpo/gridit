@@ -63,6 +63,10 @@
   color: tomato;
 }
 
+table {
+  margin-left: -20px;
+}
+
 /* Graph styling */
 
 .electric-graph, .gas-graph {
