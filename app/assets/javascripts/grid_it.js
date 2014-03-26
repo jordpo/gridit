@@ -128,11 +128,12 @@ GridIt.saveBill = function (event) {
     GridIt.Graph3.draw('electric');
     GridIt.Graph3.draw('gas');
     // Clean up
-    $form.parent().hide();
     $form.parent().next().show();
 
     // Show predict if ready
     GridIt.hideSetup($node.parent());
+
+    $form.parent().remove();
   });
 };
 
