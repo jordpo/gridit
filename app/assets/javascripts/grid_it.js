@@ -167,7 +167,8 @@ GridIt.validations = function (amount, bill_period, utility, type) {
     bill_date = new Date(n.bill_period);
     bill_date.setDate(bill_date.getDate() + 1);
     return bill_date.getMonth() === date.getMonth() &&
-      bill_date.getYear() === date.getYear();
+      bill_date.getYear() === date.getYear() &&
+      !n.prediction;
   });
 
   // General validations
