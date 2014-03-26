@@ -52,12 +52,9 @@ GridIt.saveBill = function (event) {
     $bill_period = $form.find("#bill_bill_period"),
     $utility = $form.find("#bill_utility");
 
-  // Validations
-  if ($amount.val() === '' || $bill_period.val() === '') {
-    $('p.alert').html('Need to populate both the amount and bill period.');
+  // Run validation check
+  if (!GridIt.validations($amount.val(), $bill_period.val(), $utility.val())) {
     return false;
-  } else {
-    $('p.alert').html('');
   }
 
   var bill = new GridIt.Bill($amount.val(), $bill_period.val(), $utility.val());
@@ -121,6 +118,40 @@ GridIt.saveBill = function (event) {
     $form.parent().hide();
     $form.parent().next().show();
   });
+};
+
+GridIt.validations = function (amount, bill_period, utility) {
+  var bills = JSON.parse($('.' + utility + '-graph').attr('data')),
+    bill;
+  // Convert strings to correct data type explicitly
+  amount = parseFloat(amount);
+  bill_period = new Date(bill_period);
+
+  // Check to see if there is already a bill for that month
+  bill = $.grep(bills, function (n, i) {
+    return new Date(n.bill_period).getMonth() === bill_period.getMonth();
+  });
+
+  // Both fields need to be populated
+  if (amount === '' || bill_period === '') {
+    $('p.alert').html('Need to populate both the amount and bill period.');
+    return false;
+    // Amount needs to be a correct format
+  } else if (typeof amount !== 'number' || amount < 0 ) {
+    $('p.alert').html('Amount needs to be a positive number.');
+    return false;
+    // Bill_period needs to be earlier than current month
+  } else if (bill_period > Date.now()) {
+    $('p.alert').html('Bill period should be no later than last month.');
+    return false;
+  } else if ( bill[0] !== undefined ) {
+    $('p.alert').html('Bill for this month was already saved.');
+    return false;
+  } else {
+    // If all validations pass
+    $('p.alert').html('');
+    return true;
+  }
 };
 
 
