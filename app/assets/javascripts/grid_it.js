@@ -134,6 +134,10 @@ GridIt.saveBill = function (event) {
     GridIt.hideSetup($node.parent());
 
     $form.parent().remove();
+  }).fail( function (error) {
+    $('.loader').hide();
+    $('p.alert').html("Something went wrong. Try again.");
+    return false;
   });
 };
 
@@ -175,7 +179,6 @@ GridIt.validations = function (amount, bill_period, utility, type) {
     return false;
   }
 
-  // debugger
   // Form specific validations
   test_date = new Date();
   test_date.setMonth(test_date.getMonth() - 1);
