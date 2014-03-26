@@ -2,6 +2,8 @@
 %p Using the correlation that gas and electric bills tend to have with weather temperature, this app simply applies linear regression to 'predict' what your next next month's bill will be. The more you use it, the more accurate predictions will be, as well as taking full advantage of the historical bill tracker.
 
 .loader
+  %br
+  %p Just one moment!
 
 %h1 What are my bills for next month?
 .row
@@ -17,7 +19,7 @@
             .form
               %p.electric-left #{setup_left(@electric) - i} bill(s) to go!
               = render partial: 'form', locals: {utility: 'electric', submit_text: 'Add electricity bill', prior: false}
-      - if to_predict?(@electric)
+      - if to_predict?(@electric) && current_user.ready?('electric')
         .predict
           %h1 Predict
           %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
@@ -28,9 +30,9 @@
         %p Here is your predicted electricity bill for next month. From here, you can add the actual amount that you paid, as well as view historical bills.
         %p.electric-prediction
 
-        .electric-bills{data: @electric.to_json }
+        .electric-bills
           %h1 Historical Electricity Bills
-          %svg.electric-graph
+          .electric-graph{data: @electric.to_json }
           %table.table
             %tr
               %th Month
@@ -61,7 +63,7 @@
             .form
               %p.gas-left #{setup_left(@gas) - i} bill(s) to go!
               = render partial: 'form', locals: {utility: 'gas', submit_text: 'Add gas bill', prior: false}
-      - if to_predict?(@gas)
+      - if to_predict?(@gas) && current_user.ready?('gas')
         .predict
           %h1 Predict
           %p Ok, now using the most recent utility bill, let's predict what next month's bill will be.
@@ -72,9 +74,9 @@
         %p Here is your predicted gas bill for next month. From here, you can add the actual amount that you paid, as well as view historical bills.
         %p.gas-prediction
 
-        .gas-bills{data: @gas.to_json }
+        .gas-bills
           %h1 Historical Gas Bills
-          %svg.gas-graph
+          .gas-graph{data: @gas.to_json }
           %table.table
             %tr
               %th Month

@@ -14,29 +14,31 @@ GridIt.init = function () {
   $('.electric-show').on('click', function (event) {
     event.preventDefault();
     $('.electric-container').toggle();
+    GridIt.Graph3.draw('electric');
   });
   $('.gas-show').on('click', function (event) {
     event.preventDefault();
     $('.gas-container').toggle();
+    GridIt.Graph3.draw('gas');
   });
 };
 
 // Retrieve the list of bills from DOM
 GridIt.getElectric = function () {
-  this.electricBills = JSON.parse($('.electric-bills').attr('data'));
+  this.electricBills = JSON.parse($('.electric-graph').attr('data'));
   return true;
 };
 
 GridIt.getGas = function () {
-  this.gasBills = JSON.parse($('.gas-bills').attr('data'));
+  this.gasBills = JSON.parse($('.gas-graph').attr('data'));
   return true;
 };
 
 // In case I need to sort the data
 GridIt.compare = function (a, b) {
-  if (a.bill_period > b.bill_period)
+  if (a.amount > b.amount)
      return -1;
-  if (a.bill_period < b.bill_period)
+  if (a.amount < b.amount)
      return 1;
   // a must be equal to b
   return 0;
@@ -70,10 +72,10 @@ GridIt.saveBill = function (event) {
       }
     },
     beforeSend: function () {
-      $('.loader').html('Getting right back to you.');
+      $('.loader').show();
     }
   }).done(function (data) {
-    $('.loader').html('');
+    $('.loader').hide();
 
     bill.id = data.bill.id;
     bill.temperature = data.bill.temperature;
@@ -85,6 +87,8 @@ GridIt.saveBill = function (event) {
       $('.gas-bills .table tr:eq(0)').after(bill.renderRow());
     } else {
       GridIt.electricBills.push(bill);
+      console.log(bill);
+
       $('.electric-bills .table tr:eq(0)').after(bill.renderRow());
     }
 
@@ -111,7 +115,8 @@ GridIt.saveBill = function (event) {
     }
 
     // TODO - call method to redraw graph
-
+    GridIt.Graph3.draw('electric');
+    GridIt.Graph3.draw('gas');
     // Clean up
     $form.parent().hide();
     $form.parent().next().show();

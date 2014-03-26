@@ -12,13 +12,6 @@
  *= require_tree .
  */
 
-svg {
-  width: 100%;
-  height: 300px;
-}
-
-
-
 /* Only show one form in setup at a time */
 .setup .form:nth-child(n+4) {
   display: none;
@@ -28,11 +21,16 @@ svg {
   position: fixed;
   z-index: 2;
   font-size: 2em;
-  color: tomato;
-  top: 300px;
-  left: 200px;
-  width: 300px;
-  background-color: #000;
+  top: 40%;
+  margin-left: -30%;
+  left: 50%;
+  width: 60%;
+  height: 150px;
+  background-color: #FFF;
+  text-align: center;
+  border: 1px solid tomato;
+  border-radius: 20px 20px;
+  display: none;
 }
 
 .gas-container, .electric-container {
@@ -63,4 +61,37 @@ svg {
 
 .gas-left, .electric-left {
   color: tomato;
+}
+
+/* Graph styling */
+
+.electric-graph, .gas-graph {
+  width: 100%;
+  height: 300px;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+  fill-opacity: .9;
+}
+
+.x.axis path {
+  display: none;
+}
+
+label {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
