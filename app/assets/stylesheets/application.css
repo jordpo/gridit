@@ -63,6 +63,27 @@
   color: tomato;
 }
 
+.navbar {
+  background-color: AliceBlue;
+  color: black;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: black;
+}
+
+.navbar a:hover {
+  color: tomato;
+}
+
+.welcome-msg {
+  background-color: AliceBlue;
+  padding: 30px;
+  margin: 20px;
+  border-radius: 10px 10px;
+}
+/* margin fix for mobile*/
 table {
   margin-left: -20px;
 }
@@ -92,10 +113,4 @@ table {
 
 .x.axis path {
   display: none;
-}
-
-label {
-  position: absolute;
-  top: 10px;
-  right: 10px;
 }
