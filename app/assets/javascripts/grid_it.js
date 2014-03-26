@@ -139,7 +139,7 @@ GridIt.saveBill = function (event) {
 
 GridIt.validations = function (amount, bill_period, utility, type) {
   var bills = JSON.parse($('.' + utility + '-graph').attr('data')),
-    bill, date, bill_date;
+    bill, date, bill_date, test_date;
 
   // First check that fields are populated at all
   if (amount === '' || bill_period === '') {
@@ -157,7 +157,8 @@ GridIt.validations = function (amount, bill_period, utility, type) {
   bill = $.grep(bills, function (n, i) {
     bill_date = new Date(n.bill_period);
     bill_date.setDate(bill_date.getDate() + 1);
-    return bill_date.getMonth() === date.getMonth();
+    return bill_date.getMonth() === date.getMonth() &&
+      bill_date.getYear() === date.getYear();
   });
 
   // General validations
@@ -176,8 +177,10 @@ GridIt.validations = function (amount, bill_period, utility, type) {
 
   // debugger
   // Form specific validations
+  test_date = new Date();
+  test_date.setMonth(test_date.getMonth() - 1);
   if (type === 'setup-form') {
-    if ( date.getMonth() === new Date().getMonth() - 1) {
+    if ( Math.abs(date - test_date) / (1000 * 60 * 60 * 24) < 30 ) {
       $('p.alert').html("Bill can't be the previous month for the setup.");
       return false;
     } else if ( ((new Date() - date) / (1000 * 60 * 60 * 24 * 365.26)) > 1) {
@@ -187,7 +190,7 @@ GridIt.validations = function (amount, bill_period, utility, type) {
 
   }
   if (type === 'predict-form') {
-    if ( date.getMonth() !== new Date().getMonth() - 1) {
+    if ( Math.abs(date - test_date) / (1000 * 60 * 60 * 24) > 30 ) {
       $('p.alert').html("Bill must be from the previous month in order to predict.");
       return false;
     }
