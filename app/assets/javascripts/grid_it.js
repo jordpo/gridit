@@ -10,7 +10,7 @@ GridIt.init = function () {
 
   // Attach event listeners here
 
-  $('form').on('submit', GridIt.saveBill );
+  $('.form').on('submit', GridIt.saveBill );
   $('.electric-show').on('click', function (event) {
     event.preventDefault();
     $('.electric-container').toggle();
@@ -21,17 +21,28 @@ GridIt.init = function () {
     $('.gas-container').toggle();
     GridIt.Graph3.draw('gas');
   });
+  // Clear out any messages
+  $('.container').on('click', function () {
+    $('p.alert').html('');
+    $('p.notice').html('');
+  });
 };
 
 // Retrieve the list of bills from DOM
 GridIt.getElectric = function () {
-  this.electricBills = JSON.parse($('.electric-graph').attr('data'));
-  return true;
+  var dataString = $('.electric-graph').attr('data');
+  if ( dataString !== undefined ) {
+    this.electricBills = JSON.parse(dataString);
+    return true;
+  }
 };
 
 GridIt.getGas = function () {
-  this.gasBills = JSON.parse($('.gas-graph').attr('data'));
-  return true;
+  var dataString = $('.gas-graph').attr('data');
+  if ( dataString !== undefined ) {
+    this.gasBills = JSON.parse(dataString);
+    return true;
+  }
 };
 
 // In case I need to sort the data
