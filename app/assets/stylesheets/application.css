@@ -45,6 +45,11 @@
   display: none;
 }
 
+footer {
+  position: relative;
+  bottom: 0;
+}
+
 /* Text styling */
 .info {
   font-style: italic;
