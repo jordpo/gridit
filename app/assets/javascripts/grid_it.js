@@ -142,8 +142,13 @@ GridIt.saveBill = function (event) {
 };
 
 GridIt.validations = function (amount, bill_period, utility, type) {
-  var bills = JSON.parse($('.' + utility + '-graph').attr('data')),
-    bill, date, bill_date, test_date;
+  var bills, bill, date, bill_date, test_date;
+
+  if ( utility === 'electric') {
+    bills = GridIt.electricBills;
+  } else {
+    bills = GridIt.gasBills;
+  }
 
   // First check that fields are populated at all
   if (amount === '' || bill_period === '') {
