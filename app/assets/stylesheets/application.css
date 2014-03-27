@@ -168,10 +168,16 @@ table {
 }
 
 @media (max-device-width: 450px){
-  .edit-bill-container {
+  .edit-bill-container, .loader {
     width: 100%;
     top: 10%;
     margin: 0;
     left: 0;
+  }
+  .loader {
+    width: 80%;
+    margin-left: 10%;
+    top: 20%;
+    font-size: 22px;
   }
 }
