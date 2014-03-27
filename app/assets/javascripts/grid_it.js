@@ -43,7 +43,7 @@ GridIt.init = function () {
   });
 
   // Clear out any messages
-  $('.jumbotron').on('click', function () {
+  $('.container').on('click', function () {
     $('p.alert-bill, p.alert').html('');
     $('p.notice-bill, p.notice').html('');
   });
@@ -219,12 +219,12 @@ GridIt.saveBill = function ($form, formType, method, callback) {
   });
 };
 
-GridIt.insertPredicted = function (predicted) {
-  var predicted = new GridIt.Bill(predicted.amount, predicted.bill_period,
-    predicted.utility);
-  predicted.id = predicted.id;
-  predicted.temperature = predicted.temperature;
-  predicted.prediction = predicted.prediction;
+GridIt.insertPredicted = function (bill) {
+  var predicted = new GridIt.Bill(bill.amount, bill.bill_period,
+    bill.utility);
+  predicted.id = bill.id;
+  predicted.temperature = bill.temperature;
+  predicted.prediction = bill.prediction;
 
   // Add predicted to collection
   if (predicted.utility === 'gas') {
