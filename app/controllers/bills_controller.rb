@@ -1,5 +1,5 @@
 class BillsController < ApplicationController
-  before_action :get_bill, only: [:edit, :update]
+  before_action :get_bill, only: [:edit, :update, :destroy]
 
   def index
     @bills = current_user.bills.order(bill_period: :desc)
@@ -48,7 +48,8 @@ class BillsController < ApplicationController
   end
 
   def destroy
-    @bill.delete
+    @bill.destroy
+    render json: {bill: @bill}
   end
 
   private

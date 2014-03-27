@@ -9,6 +9,6 @@
       = f.label :bill_period, 'Bill Period'
       = f.date_field :bill_period, class: 'form-control'
     = f.hidden_field :utility, value: 'electric'
-  %button.bill-submit Edit bill
-  = link_to 'Delete bill', @bill, method: :delete
+    %button.bill-submit Edit bill
+  = link_to 'Delete bill', @bill, method: :delete, class: 'delete-bill'
   %button.exit-edit Exit

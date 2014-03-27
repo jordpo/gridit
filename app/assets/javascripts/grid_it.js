@@ -53,10 +53,22 @@ GridIt.init = function () {
   $('.electric-bills .table').on('click', function () {
     var index = $(event.target).parent().index() - 1;
     var bill = GridIt.electricBills[index];
+
+    // Set current_selection properties
+    GridIt.selectedRow = $(event.target).parent();
+    GridIt.selectedBill = bill;
     var $container = $('.edit-bill-container');
     console.log(bill);
 
-    $container.load('/bills/' + bill.id + '/edit .edit-bill');
+    $container.load('/bills/' + bill.id + '/edit .edit-bill', function (response) {
+      // Add the event listener for the delete link
+      $('.delete-bill').on('click', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log('delete!');
+        GridIt.deleteBill($(event.target));
+      });
+    });
     $container.show();
   });
 
@@ -175,6 +187,49 @@ GridIt.saveBill = function ($form, formType, $node, method) {
     $form.parent().remove();
     $('.edit-bill-container').hide();
   }).fail( function (error) {
+    $('.loader').hide();
+    $('p.alert').html("Something went wrong. Try again.");
+    return false;
+  });
+};
+
+GridIt.deleteBill = function ($link) {
+  var index = GridIt.selectedRow.index() - 1,
+    bills, bill_id, url, utility;
+
+  utility = GridIt.selectedBill.utility;
+
+  if ( utility === 'electric') {
+    bills = GridIt.electricBills;
+  } else {
+    bills = GridIt.gasBills;
+  }
+
+  url = $link.attr('href');
+
+  $.ajax({
+    type: 'delete',
+    url: url,
+    beforeSend: function () {
+      $('.loader').show();
+    }
+  }).done(function (data) {
+    console.log('success');
+    $('.loader').hide();
+    // delete from collection
+    bills.splice(index, 1);
+
+    //remove table row from DOM
+    GridIt.selectedRow.remove();
+    $('p.notice').html('Bill deleted.');
+    // clean up
+    $('.edit-bill-container').hide();
+
+    // call method to redraw graph
+    GridIt.Graph3.draw(utility);
+
+  }).fail(function () {
+    console.log('fail');
     $('.loader').hide();
     $('p.alert').html("Something went wrong. Try again.");
     return false;
