@@ -33,17 +33,17 @@ GridIt.init = function () {
   // Show sections
   $('.electric-show').on('click', function (event) {
     event.preventDefault();
-    $('.electric-container').toggle();
+    $('.electric-container').toggle("slide", 1000);
     GridIt.Graph3.draw('electric');
   });
   $('.gas-show').on('click', function (event) {
     event.preventDefault();
-    $('.gas-container').toggle();
+    $('.gas-container').toggle("slide", 1000);
     GridIt.Graph3.draw('gas');
   });
 
   // Clear out any messages
-  $('.container').on('click', function () {
+  $('.row').on('click', function () {
     $('p.alert-bill, p.alert').html('');
     $('p.notice-bill, p.notice').html('');
   });

@@ -10,6 +10,7 @@
  *
  *= require_self
  *= require_tree .
+ *= require jquery.ui.all
  */
 
 /* Only show one form in setup at a time */
