@@ -116,7 +116,11 @@ GridIt.showEdit = function (event) {
         $('.edit-bill-container').hide();
 
         // call method to redraw graph
-        GridIt.Graph3.draw(utility);
+        if (utility === 'electric-bills') {
+          GridIt.Graph3.draw('electric');
+        } else {
+          GridIt.Graph3.draw('gas');
+        }
       });
     });
   });
