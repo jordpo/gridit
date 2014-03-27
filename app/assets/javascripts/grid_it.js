@@ -37,7 +37,17 @@ GridIt.init = function () {
   $('.edit-bill-container').on('click', function (event) {
     event.preventDefault();
     var actionType = event.target.className;
-    var $form = $(event.target).parent().find('form');
+    var $form = $(event.target).parent();
+    var index = GridIt.selectedRow.index() - 1,
+      bills, utility;
+
+    utility = GridIt.selectedBill.utility;
+
+    if ( utility === 'electric') {
+      bills = GridIt.electricBills;
+    } else {
+      bills = GridIt.gasBills;
+    }
 
     // Route depending on target
     if (actionType === "exit-edit" ) {
@@ -46,33 +56,17 @@ GridIt.init = function () {
     } else if (actionType === "bill-submit") {
       console.log('clicked!');
       GridIt.saveBill($form, 'edit-form', 'undefined', 'patch');
+      bills.splice(index, 1);
+      GridIt.selectedRow.remove();
+      $('.edit-bill-container').hide();
+      GridIt.Graph3.draw(utility);
     }
   });
 
   // Event listeners for bills on table
-  $('.electric-bills .table').on('click', function () {
-    var index = $(event.target).parent().index() - 1;
-    var bill = GridIt.electricBills[index];
+  $('.electric-bills .table').on('click', GridIt.showEdit);
+  $('.gas-bills .table').on('click', GridIt.showEdit);
 
-    // Set current_selection properties
-    GridIt.selectedRow = $(event.target).parent();
-    GridIt.selectedBill = bill;
-    var $container = $('.edit-bill-container');
-    console.log(bill);
-
-    $container.load('/bills/' + bill.id + '/edit .edit-bill', function (response) {
-      // Add the event listener for the delete link
-      $('.delete-bill').on('click', function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        console.log('delete!');
-        GridIt.deleteBill($(event.target));
-      });
-    });
-    $container.show();
-  });
-
-  // $('.gas-bills .table')
 };
 
 // Retrieve the list of bills from DOM
@@ -100,6 +94,34 @@ GridIt.compare = function (a, b) {
      return 1;
   // a must be equal to b
   return 0;
+};
+
+GridIt.showEdit = function (event) {
+  var index = $(event.target).parent().index() - 1,
+    bill,
+    utility = $(this).parent().attr('class');
+
+  if ( utility === 'electric-bills') {
+    bill = GridIt.electricBills[index];
+  } else {
+    bill = GridIt.gasBills[index];
+  }
+
+  // Set current_selection properties
+  GridIt.selectedRow = $(event.target).parent();
+  GridIt.selectedBill = bill;
+  var $container = $('.edit-bill-container');
+
+  $container.load('/bills/' + bill.id + '/edit .edit-bill', function (response) {
+    // Add the event listener for the delete link
+    $('.delete-bill').on('click', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('delete!');
+      GridIt.deleteBill($(event.target));
+    });
+  });
+  $container.show();
 };
 
 // Event handler for any form submission on main page
