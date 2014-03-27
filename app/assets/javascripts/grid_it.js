@@ -44,8 +44,9 @@ GridIt.init = function () {
       $('.edit-bill-container').hide();
     } else if (actionType === "bill-submit") {
       console.log('clicked!');
-      GridIt.saveBill($form, 'edit-form', 'undefined', 'patch');
-      $('.edit-bill-container').hide();
+      if (GridIt.saveBill($form, 'edit-form', 'undefined', 'patch')) {
+        $('.edit-bill-container').hide();
+      }
     }
   });
 
@@ -173,6 +174,7 @@ GridIt.saveBill = function ($form, formType, $node, method) {
     }
 
     $form.parent().remove();
+    return true;
   }).fail( function (error) {
     $('.loader').hide();
     $('p.alert').html("Something went wrong. Try again.");
@@ -182,7 +184,7 @@ GridIt.saveBill = function ($form, formType, $node, method) {
 
 GridIt.validations = function (amount, bill_period, utility, type) {
   var bills, bill, date, bill_date, test_date;
-
+debugger
   if ( utility === 'electric') {
     bills = GridIt.electricBills;
   } else {

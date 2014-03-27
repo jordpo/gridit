@@ -4,7 +4,7 @@ GridIt.Graph3 = {};
 
 GridIt.Graph3.draw = function (utility) {
   var $container = $('.' + utility + '-graph'),
-    data;
+    data, dupe_data;
   $container.empty();
 
   // Retrieve data
@@ -13,6 +13,8 @@ GridIt.Graph3.draw = function (utility) {
   } else {
     data = GridIt.gasBills;
   }
+
+  dupe_data = data.slice(0);
 
   var margin = {top: 20, right: 20, bottom: 30, left: 40},
       width = parseFloat($container.css('width')) - margin.left - margin.right,
@@ -63,7 +65,7 @@ GridIt.Graph3.draw = function (utility) {
       .text("amount");
 
   svg.selectAll(".bar")
-      .data(data)
+      .data(dupe_data)
     .enter().append("rect")
       .attr("class", "bar")
       .attr("x", function(d) { return x(d.date); })
@@ -78,7 +80,7 @@ GridIt.Graph3.draw = function (utility) {
     clearTimeout(sortTimeout);
 
     // Copy-on-write since tweens are evaluated after a delay.
-    var x0 = x.domain(data.sort(GridIt.compare)
+    var x0 = x.domain(dupe_data.sort(GridIt.compare)
         .map(function(d) { return d.date; }))
         .copy();
 
