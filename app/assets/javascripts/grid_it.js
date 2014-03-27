@@ -27,10 +27,27 @@ GridIt.init = function () {
     $('p.notice').html('');
   });
 
-  $('.exit_edit').on('click', function (event) {
+  $('.edit-bill-container').on('click', function (event) {
     event.preventDefault();
-    $('.edit-bill-container').hide();
+
+    // Route depending on target
+    if (event.target.className === "exit_edit" ) {
+      $('.edit-bill-container').hide();
+    }
   });
+
+  // Event listeners for edit bills
+  $('.electric-bills .table').on('click', function () {
+    var index = $(event.target).parent().index() - 1;
+    var bill = GridIt.electricBills[index];
+    var $container = $('.edit-bill-container');
+    console.log(bill);
+
+    $container.load('/bills/' + bill.id + '/edit .edit-bill');
+    $container.show();
+  });
+
+  // $('.gas-bills .table')
 };
 
 // Retrieve the list of bills from DOM
