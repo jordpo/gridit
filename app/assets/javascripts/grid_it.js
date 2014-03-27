@@ -10,7 +10,13 @@ GridIt.init = function () {
 
   // Attach event listeners here
 
-  $('.form').on('submit', GridIt.saveBill );
+  $('.form').on('submit', function (event) {
+    event.preventDefault();
+    var formType = this.classList[1],
+      $node = $(this),
+      $form = $(event.target);
+    GridIt.saveBill($form, formType, $node, 'post');
+  });
   $('.electric-show').on('click', function (event) {
     event.preventDefault();
     $('.electric-container').toggle();
@@ -27,16 +33,23 @@ GridIt.init = function () {
     $('p.notice').html('');
   });
 
+  // Edit bill router
   $('.edit-bill-container').on('click', function (event) {
     event.preventDefault();
+    var actionType = event.target.className;
+    var $form = $(event.target).parent().find('form');
 
     // Route depending on target
-    if (event.target.className === "exit_edit" ) {
+    if (actionType === "exit-edit" ) {
+      $('.edit-bill-container').hide();
+    } else if (actionType === "bill-submit") {
+      console.log('clicked!');
+      GridIt.saveBill($form, 'edit-form', 'undefined', 'patch');
       $('.edit-bill-container').hide();
     }
   });
 
-  // Event listeners for edit bills
+  // Event listeners for bills on table
   $('.electric-bills .table').on('click', function () {
     var index = $(event.target).parent().index() - 1;
     var bill = GridIt.electricBills[index];
@@ -78,25 +91,27 @@ GridIt.compare = function (a, b) {
 };
 
 // Event handler for any form submission on main page
-GridIt.saveBill = function (event) {
-  event.preventDefault();
-  var $form = $(event.target),
-    $amount = $form.find("#bill_amount"),
+GridIt.saveBill = function ($form, formType, $node, method) {
+  var $amount = $form.find("#bill_amount"),
     $bill_period = $form.find("#bill_bill_period"),
     $utility = $form.find("#bill_utility"),
-    formType = this.classList[1],
-    $node = $(this);
+    url;
+
+  if (formType === 'edit-form') {
+    url = $form.attr('action');
+  } else {
+    url = '/bills';
+  }
 
   // Run validation check
   if (!GridIt.validations($amount.val(), $bill_period.val(), $utility.val(), formType)) {
     return false;
   }
-
   var bill = new GridIt.Bill($amount.val(), $bill_period.val(), $utility.val());
 
   $.ajax({
-    type: 'POST',
-    url: '/bills',
+    type: method,
+    url: url,
     data: { bill : {
       amount : bill.amount,
       bill_period : bill.bill_period,
@@ -116,12 +131,12 @@ GridIt.saveBill = function (event) {
     // Add bill to data collection
     if (bill.utility === 'gas') {
       GridIt.gasBills.push(bill);
-      $('.gas-bills .table tr:eq(0)').after(bill.renderRow());
+      $('.gas-bills .table').append(bill.renderRow());
     } else {
       GridIt.electricBills.push(bill);
       console.log(bill);
 
-      $('.electric-bills .table tr:eq(0)').after(bill.renderRow());
+      $('.electric-bills .table').append(bill.renderRow());
     }
 
     // create a new predicted bill if received
@@ -137,12 +152,12 @@ GridIt.saveBill = function (event) {
         GridIt.gasBills.push(predicted);
         $('p.gas-prediction').html("Your predicted amount is $" + predicted.amount +
           " with avg monthly temperature of " + predicted.temperature + " degrees.");
-        $('.gas-bills .table tr:eq(0)').after(predicted.renderRow());
+        $('.gas-bills .table').append(predicted.renderRow());
       } else {
         GridIt.electricBills.push(predicted);
         $('p.electric-prediction').html("Your predicted amount is $" + predicted.amount +
           " with avg monthly temperature of " + predicted.temperature + " degrees.");
-        $('.electric-bills .table tr:eq(0)').after(predicted.renderRow());
+        $('.electric-bills .table').append(predicted.renderRow());
       }
     }
 
@@ -153,7 +168,9 @@ GridIt.saveBill = function (event) {
     $form.parent().next().show();
 
     // Show predict if ready
-    GridIt.hideSetup($node.parent());
+    if ($node !== 'undefined' ) {
+      GridIt.hideSetup($node.parent());
+    }
 
     $form.parent().remove();
   }).fail( function (error) {
@@ -202,7 +219,7 @@ GridIt.validations = function (amount, bill_period, utility, type) {
   } else if (date > Date.now()) {
     $('p.alert').html('Bill period should be no later than last month.');
     return false;
-  } else if ( bill[0] !== undefined ) {
+  } else if ( bill[0] !== undefined && type !== 'edit-form') {
     $('p.alert').html('Bill for this month was already saved.');
     return false;
   }

@@ -43,7 +43,7 @@ class BillsController < ApplicationController
     @bill.assign_attributes(bill_params)
     @bill.get_temp(current_user.city, current_user.state)
     if @bill.save
-      render json: @bill
+      render json: {bill: @bill }
     end
   end
 
