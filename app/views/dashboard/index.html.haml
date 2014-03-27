@@ -7,6 +7,21 @@
     %br
     %p Just one moment!
 
+  .edit-bill-container
+    .edit-bill
+      = form_for :bill do |f|
+        .form-group
+          = f.label :amount
+          = f.text_field :amount, class: 'form-control', placeholder: 'Amount'
+        .form-group
+          = f.label :bill_period, 'Bill Period'
+          = f.date_field :bill_period, class: 'form-control'
+        = f.hidden_field :utility, value: 'Electric'
+        = f.submit 'Edit bill', class: 'form-control'
+
+    = link_to 'Delete bill', root_path
+    %button.exit_edit Exit
+
   %h1 What are my bills for next month?
   .row
     .col-md-6

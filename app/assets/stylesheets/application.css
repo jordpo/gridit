@@ -17,7 +17,7 @@
   display: none;
 }
 
-.loader {
+.loader, .edit-bill-container {
   position: fixed;
   z-index: 2;
   font-size: 2em;
@@ -25,8 +25,14 @@
   margin-left: -30%;
   left: 50%;
   width: 60%;
+  background-color: AliceBlue;
+  padding: 30px;
+  border-radius: 10px 10px;
+  border: 1px solid;
+}
+
+.loader {
   height: 150px;
-  background-color: #FFF;
   text-align: center;
   border: 1px solid tomato;
   border-radius: 20px 20px;

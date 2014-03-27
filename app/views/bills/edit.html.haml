@@ -1,0 +1,9 @@
+.edit-bill
+  = form_for @bill do |f|
+    .form-group
+      = f.text_field :amount, class: 'form-control', placeholder: 'Amount'
+    .form-group
+      = f.label :bill_period, 'Bill Period'
+      = f.date_field :bill_period, class: 'form-control'
+    = f.hidden_field :utility, value: utility
+    = f.submit submit_text, class: 'form-control'

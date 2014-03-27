@@ -1,4 +1,6 @@
 class BillsController < ApplicationController
+  before_action :get_bill, only: [:edit, :update]
+
   def index
     @bills = current_user.bills.order(bill_period: :desc)
     respond_to do |f|
@@ -34,7 +36,26 @@ class BillsController < ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    @bill.assign_attributes(bill_params)
+    @bill.get_temp(current_user.city, current_user.state)
+    if @bill.save
+      render json: @bill
+    end
+  end
+
+  def destroy
+    @bill.delete
+  end
+
   private
+  def get_bill
+    @bill = Bill.find(params[:id])
+  end
+
   def bill_params
     params.require(:bill).permit(:amount, :bill_period, :utility)
   end

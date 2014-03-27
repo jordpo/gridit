@@ -26,6 +26,11 @@ GridIt.init = function () {
     $('p.alert').html('');
     $('p.notice').html('');
   });
+
+  $('.exit_edit').on('click', function (event) {
+    event.preventDefault();
+    $('.edit-bill-container').hide();
+  });
 };
 
 // Retrieve the list of bills from DOM
