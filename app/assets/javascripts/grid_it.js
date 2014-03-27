@@ -25,6 +25,8 @@ GridIt.init = function () {
       GridIt.hideSetup($node.parent());
 
       $form.parent().remove();
+
+      $('p.notice-bill').html('Bill saved.');
     });
   });
 
@@ -42,8 +44,8 @@ GridIt.init = function () {
 
   // Clear out any messages
   $('.jumbotron').on('click', function () {
-    $('p.alert').html('');
-    $('p.notice').html('');
+    $('p.alert-bill, p.alert').html('');
+    $('p.notice-bill, p.notice').html('');
   });
 
   // edit-bill-container event listener
@@ -109,7 +111,7 @@ GridIt.showEdit = function (event) {
         bills.splice(index, 1);
         //remove table row from DOM
         GridIt.selectedRow.remove();
-        $('p.notice').html('Bill deleted.');
+        $('p.notice-bill').html('Bill deleted.');
         // clean up
         $('.edit-bill-container').hide();
 
@@ -139,7 +141,7 @@ GridIt.routeEdit = function (event) {
   // Route depending on target
   if (actionType === "exit-edit" ) {
     $('.edit-bill-container').hide();
-    $('p.alert').html('');
+    $('p.alert-bill').html('');
   } else if (actionType === "bill-submit") {
     GridIt.saveBill($form, 'edit-form', 'patch', function () {
       // action to be taken after bill saved
@@ -147,6 +149,7 @@ GridIt.routeEdit = function (event) {
       GridIt.selectedRow.remove();
       $('.edit-bill-container').hide();
       GridIt.Graph3.draw(utility);
+      $('p.notice-bill').html('Bill updated.');
     });
   }
 };
@@ -207,7 +210,7 @@ GridIt.saveBill = function ($form, formType, method, callback) {
     callback();
   }).fail( function (error) {
     $('.loader').hide();
-    $('p.alert').html("Something went wrong. Try again.");
+    $('p.alert-bill').html("Something went wrong. Try again.");
     return false;
   });
 };
@@ -250,7 +253,7 @@ GridIt.deleteBill = function ($link, callback) {
   }).fail(function () {
     console.log('fail');
     $('.loader').hide();
-    $('p.alert').html("Something went wrong. Try again.");
+    $('p.alert-bill').html("Something went wrong. Try again.");
     return false;
   });
 };
@@ -266,7 +269,7 @@ GridIt.validations = function (amount, bill_period, utility, type) {
 
   // First check that fields are populated at all
   if (amount === '' || bill_period === '') {
-    $('p.alert').html('Need to populate both the amount and bill period.');
+    $('p.alert-bill').html('Need to populate both the amount and bill period.');
     return false;
   }
 
@@ -278,24 +281,29 @@ GridIt.validations = function (amount, bill_period, utility, type) {
 
   // Check to see if there is already a bill for that month
   bill = $.grep(bills, function (n, i) {
-    bill_date = new Date(n.bill_period);
+    var bill_date = new Date(n.bill_period);
+
     bill_date.setDate(bill_date.getDate() + 1);
     return bill_date.getMonth() === date.getMonth() &&
       bill_date.getYear() === date.getYear() &&
       !n.prediction;
   });
 
+  return GridIt.validationCheck(bill, amount, date, type);
+};
+
+GridIt.validationCheck = function (bill, amount, date, type) {
   // General validations
   // Amount needs to be the correct format
   if (isNaN(amount) || amount < 0 ) {
-    $('p.alert').html('Amount needs to be a positive number.');
+    $('p.alert-bill').html('Amount needs to be a positive number.');
     return false;
     // Bill_period needs to be earlier than current month
   } else if (date > Date.now()) {
-    $('p.alert').html('Bill period should be no later than last month.');
+    $('p.alert-bill').html('Bill period should be no later than last month.');
     return false;
   } else if ( bill[0] !== undefined && type !== 'edit-form') {
-    $('p.alert').html('Bill for this month was already saved.');
+    $('p.alert-bill').html('Bill for this month was already saved.');
     return false;
   }
 
@@ -304,22 +312,22 @@ GridIt.validations = function (amount, bill_period, utility, type) {
   test_date.setMonth(test_date.getMonth() - 1);
   if (type === 'setup-form') {
     if ( Math.abs(date - test_date) / (1000 * 60 * 60 * 24) < 30 ) {
-      $('p.alert').html("Bill can't be the previous month for the setup.");
+      $('p.alert-bill').html("Bill can't be the previous month for the setup.");
       return false;
     } else if ( ((new Date() - date) / (1000 * 60 * 60 * 24 * 365.26)) > 1) {
-      $('p.alert').html("Bill should be from within a year.");
+      $('p.alert-bill').html("Bill should be from within a year.");
       return false;
     }
 
   }
   if (type === 'predict-form') {
     if ( Math.abs(date - test_date) / (1000 * 60 * 60 * 24) > 30 ) {
-      $('p.alert').html("Bill must be from the previous month in order to predict.");
+      $('p.alert-bill').html("Bill must be from the previous month in order to predict.");
       return false;
     }
   }
   // If all pass
-  $('p.alert').html('');
+  $('p.alert-bill').html('');
   return true;
 };
 
