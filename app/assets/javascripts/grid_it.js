@@ -36,7 +36,7 @@ GridIt.init = function () {
   // Edit bill router
   $('.edit-bill-container').on('click', function (event) {
     event.preventDefault();
-    var actionType = event.target.className;
+    var actionType = event.target.className.split(' ')[0];
     var $form = $(event.target).parent();
     var index = GridIt.selectedRow.index() - 1,
       bills, utility;
@@ -55,11 +55,12 @@ GridIt.init = function () {
       $('p.alert').html('');
     } else if (actionType === "bill-submit") {
       console.log('clicked!');
-      GridIt.saveBill($form, 'edit-form', 'undefined', 'patch');
-      bills.splice(index, 1);
-      GridIt.selectedRow.remove();
-      $('.edit-bill-container').hide();
-      GridIt.Graph3.draw(utility);
+      GridIt.saveBill($form, 'edit-form', 'undefined', 'patch', function () {
+        bills.splice(index, 1);
+        GridIt.selectedRow.remove();
+        $('.edit-bill-container').hide();
+        GridIt.Graph3.draw(utility);
+      });
     }
   });
 
@@ -125,7 +126,7 @@ GridIt.showEdit = function (event) {
 };
 
 // Event handler for any form submission on main page
-GridIt.saveBill = function ($form, formType, $node, method) {
+GridIt.saveBill = function ($form, formType, $node, method, callback) {
   var $amount = $form.find("#bill_amount"),
     $bill_period = $form.find("#bill_bill_period"),
     $utility = $form.find("#bill_utility"),
@@ -207,7 +208,9 @@ GridIt.saveBill = function ($form, formType, $node, method) {
     }
 
     $form.parent().remove();
-    $('.edit-bill-container').hide();
+
+    // apply changes to DOM via a callback
+    callback();
   }).fail( function (error) {
     $('.loader').hide();
     $('p.alert').html("Something went wrong. Try again.");

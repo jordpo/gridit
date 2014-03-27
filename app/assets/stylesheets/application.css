@@ -40,6 +40,20 @@
   z-index: 5;
 }
 
+.exit-edit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px
+}
+
+.delete-bill {
+  color: tomato;
+  position: absolute;
+  right: 20px;
+  bottom: 25px;
+}
+
 .gas-container, .electric-container {
   display: none;
 }
