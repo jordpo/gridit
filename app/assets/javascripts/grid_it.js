@@ -15,8 +15,20 @@ GridIt.init = function () {
     var formType = this.classList[1],
       $node = $(this),
       $form = $(event.target);
-    GridIt.saveBill($form, formType, $node, 'post');
+    GridIt.saveBill($form, formType, 'post', function () {
+
+      // call method to redraw graph
+      GridIt.Graph3.draw($form.find("#bill_utility").val());
+
+      // Clean up
+      $form.parent().next().show();
+      GridIt.hideSetup($node.parent());
+
+      $form.parent().remove();
+    });
   });
+
+  // Show sections
   $('.electric-show').on('click', function (event) {
     event.preventDefault();
     $('.electric-container').toggle();
@@ -27,42 +39,15 @@ GridIt.init = function () {
     $('.gas-container').toggle();
     GridIt.Graph3.draw('gas');
   });
+
   // Clear out any messages
   $('.jumbotron').on('click', function () {
     $('p.alert').html('');
     $('p.notice').html('');
   });
 
-  // Edit bill router
-  $('.edit-bill-container').on('click', function (event) {
-    event.preventDefault();
-    var actionType = event.target.className.split(' ')[0];
-    var $form = $(event.target).parent();
-    var index = GridIt.selectedRow.index() - 1,
-      bills, utility;
-
-    utility = GridIt.selectedBill.utility;
-
-    if ( utility === 'electric') {
-      bills = GridIt.electricBills;
-    } else {
-      bills = GridIt.gasBills;
-    }
-
-    // Route depending on target
-    if (actionType === "exit-edit" ) {
-      $('.edit-bill-container').hide();
-      $('p.alert').html('');
-    } else if (actionType === "bill-submit") {
-      console.log('clicked!');
-      GridIt.saveBill($form, 'edit-form', 'undefined', 'patch', function () {
-        bills.splice(index, 1);
-        GridIt.selectedRow.remove();
-        $('.edit-bill-container').hide();
-        GridIt.Graph3.draw(utility);
-      });
-    }
-  });
+  // edit-bill-container event listener
+  $('.edit-bill-container').on('click', GridIt.routeEdit);
 
   // Event listeners for bills on table
   $('.electric-bills .table').on('click', GridIt.showEdit);
@@ -99,34 +84,75 @@ GridIt.compare = function (a, b) {
 
 GridIt.showEdit = function (event) {
   var index = $(event.target).parent().index() - 1,
-    bill,
+    bills,
     utility = $(this).parent().attr('class');
 
   if ( utility === 'electric-bills') {
-    bill = GridIt.electricBills[index];
+    bills = GridIt.electricBills;
   } else {
-    bill = GridIt.gasBills[index];
+    bills = GridIt.gasBills;
   }
 
   // Set current_selection properties
   GridIt.selectedRow = $(event.target).parent();
-  GridIt.selectedBill = bill;
+  GridIt.selectedBill = bills[index];
   var $container = $('.edit-bill-container');
 
-  $container.load('/bills/' + bill.id + '/edit .edit-bill', function (response) {
+  $container.load('/bills/' + bills[index].id + '/edit .edit-bill', function (response) {
     // Add the event listener for the delete link
     $('.delete-bill').on('click', function(event) {
       event.preventDefault();
       event.stopPropagation();
       console.log('delete!');
-      GridIt.deleteBill($(event.target));
+      GridIt.deleteBill($(event.target), function () {
+        // delete from collection
+        bills.splice(index, 1);
+        //remove table row from DOM
+        GridIt.selectedRow.remove();
+        $('p.notice').html('Bill deleted.');
+        // clean up
+        $('.edit-bill-container').hide();
+
+        // call method to redraw graph
+        GridIt.Graph3.draw(utility);
+      });
     });
   });
   $container.show();
 };
 
+GridIt.routeEdit = function (event) {
+  event.preventDefault();
+  var actionType = event.target.className.split(' ')[0],
+    $form = $(event.target).parent(),
+    index = GridIt.selectedRow.index() - 1,
+    bills, utility;
+
+  utility = GridIt.selectedBill.utility;
+
+  if ( utility === 'electric') {
+    bills = GridIt.electricBills;
+  } else {
+    bills = GridIt.gasBills;
+  }
+
+  // Route depending on target
+  if (actionType === "exit-edit" ) {
+    $('.edit-bill-container').hide();
+    $('p.alert').html('');
+  } else if (actionType === "bill-submit") {
+    GridIt.saveBill($form, 'edit-form', 'patch', function () {
+      // action to be taken after bill saved
+      bills.splice(index, 1);
+      GridIt.selectedRow.remove();
+      $('.edit-bill-container').hide();
+      GridIt.Graph3.draw(utility);
+    });
+  }
+};
+
 // Event handler for any form submission on main page
-GridIt.saveBill = function ($form, formType, $node, method, callback) {
+GridIt.saveBill = function ($form, formType, method, callback) {
   var $amount = $form.find("#bill_amount"),
     $bill_period = $form.find("#bill_bill_period"),
     $utility = $form.find("#bill_utility"),
@@ -173,42 +199,10 @@ GridIt.saveBill = function ($form, formType, $node, method, callback) {
 
       $('.electric-bills .table').append(bill.renderRow());
     }
-
-    // create a new predicted bill if received
+    // if predicted bill returned, insert it
     if (data.predicted !== undefined ) {
-      var predicted = new GridIt.Bill(data.predicted.amount, data.predicted.bill_period,
-        data.predicted.utility);
-      predicted.id = data.predicted.id;
-      predicted.temperature = data.predicted.temperature;
-      predicted.prediction = data.predicted.prediction;
-
-      // Add predicted to collection
-      if (predicted.utility === 'gas') {
-        GridIt.gasBills.push(predicted);
-        $('p.gas-prediction').html("Your predicted amount is $" + predicted.amount +
-          " with avg monthly temperature of " + predicted.temperature + " degrees.");
-        $('.gas-bills .table').append(predicted.renderRow());
-      } else {
-        GridIt.electricBills.push(predicted);
-        $('p.electric-prediction').html("Your predicted amount is $" + predicted.amount +
-          " with avg monthly temperature of " + predicted.temperature + " degrees.");
-        $('.electric-bills .table').append(predicted.renderRow());
-      }
+      GridIt.insertPredicted(data.predicted);
     }
-
-    // call method to redraw graph
-    GridIt.Graph3.draw('electric');
-    GridIt.Graph3.draw('gas');
-    // Clean up
-    $form.parent().next().show();
-
-    // Show predict if ready
-    if ($node !== 'undefined' ) {
-      GridIt.hideSetup($node.parent());
-    }
-
-    $form.parent().remove();
-
     // apply changes to DOM via a callback
     callback();
   }).fail( function (error) {
@@ -218,19 +212,29 @@ GridIt.saveBill = function ($form, formType, $node, method, callback) {
   });
 };
 
-GridIt.deleteBill = function ($link) {
-  var index = GridIt.selectedRow.index() - 1,
-    bills, bill_id, url, utility;
+GridIt.insertPredicted = function (predicted) {
+  var predicted = new GridIt.Bill(predicted.amount, predicted.bill_period,
+    predicted.utility);
+  predicted.id = predicted.id;
+  predicted.temperature = predicted.temperature;
+  predicted.prediction = predicted.prediction;
 
-  utility = GridIt.selectedBill.utility;
-
-  if ( utility === 'electric') {
-    bills = GridIt.electricBills;
+  // Add predicted to collection
+  if (predicted.utility === 'gas') {
+    GridIt.gasBills.push(predicted);
+    $('p.gas-prediction').html("Your predicted amount is $" + predicted.amount +
+      " with avg monthly temperature of " + predicted.temperature + " degrees.");
+    $('.gas-bills .table').append(predicted.renderRow());
   } else {
-    bills = GridIt.gasBills;
+    GridIt.electricBills.push(predicted);
+    $('p.electric-prediction').html("Your predicted amount is $" + predicted.amount +
+      " with avg monthly temperature of " + predicted.temperature + " degrees.");
+    $('.electric-bills .table').append(predicted.renderRow());
   }
+};
 
-  url = $link.attr('href');
+GridIt.deleteBill = function ($link, callback) {
+  var url = $link.attr('href');
 
   $.ajax({
     type: 'delete',
@@ -239,19 +243,9 @@ GridIt.deleteBill = function ($link) {
       $('.loader').show();
     }
   }).done(function (data) {
-    console.log('success');
     $('.loader').hide();
-    // delete from collection
-    bills.splice(index, 1);
-
-    //remove table row from DOM
-    GridIt.selectedRow.remove();
-    $('p.notice').html('Bill deleted.');
-    // clean up
-    $('.edit-bill-container').hide();
-
-    // call method to redraw graph
-    GridIt.Graph3.draw(utility);
+    // Update DOM
+    callback();
 
   }).fail(function () {
     console.log('fail');
