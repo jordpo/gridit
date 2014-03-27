@@ -28,7 +28,7 @@ GridIt.init = function () {
     GridIt.Graph3.draw('gas');
   });
   // Clear out any messages
-  $('.container').on('click', function () {
+  $('.jumbotron').on('click', function () {
     $('p.alert').html('');
     $('p.notice').html('');
   });
@@ -42,11 +42,10 @@ GridIt.init = function () {
     // Route depending on target
     if (actionType === "exit-edit" ) {
       $('.edit-bill-container').hide();
+      $('p.alert').html('');
     } else if (actionType === "bill-submit") {
       console.log('clicked!');
-      if (GridIt.saveBill($form, 'edit-form', 'undefined', 'patch')) {
-        $('.edit-bill-container').hide();
-      }
+      GridIt.saveBill($form, 'edit-form', 'undefined', 'patch');
     }
   });
 
@@ -162,7 +161,7 @@ GridIt.saveBill = function ($form, formType, $node, method) {
       }
     }
 
-    // TODO - call method to redraw graph
+    // call method to redraw graph
     GridIt.Graph3.draw('electric');
     GridIt.Graph3.draw('gas');
     // Clean up
@@ -174,7 +173,7 @@ GridIt.saveBill = function ($form, formType, $node, method) {
     }
 
     $form.parent().remove();
-    return true;
+    $('.edit-bill-container').hide();
   }).fail( function (error) {
     $('.loader').hide();
     $('p.alert').html("Something went wrong. Try again.");
@@ -184,7 +183,7 @@ GridIt.saveBill = function ($form, formType, $node, method) {
 
 GridIt.validations = function (amount, bill_period, utility, type) {
   var bills, bill, date, bill_date, test_date;
-debugger
+
   if ( utility === 'electric') {
     bills = GridIt.electricBills;
   } else {
@@ -214,7 +213,7 @@ debugger
 
   // General validations
   // Amount needs to be the correct format
-  if (typeof amount !== 'number' || amount < 0 ) {
+  if (isNaN(amount) || amount < 0 ) {
     $('p.alert').html('Amount needs to be a positive number.');
     return false;
     // Bill_period needs to be earlier than current month

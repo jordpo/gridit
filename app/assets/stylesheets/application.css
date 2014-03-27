@@ -37,6 +37,7 @@
   text-align: center;
   border: 1px solid tomato;
   border-radius: 20px 20px;
+  z-index: 5;
 }
 
 .gas-container, .electric-container {
@@ -98,6 +99,16 @@ footer {
   margin: 20px;
   border-radius: 10px 10px;
 }
+
+/* edit bill styling */
+tr:nth-child(n+2):hover {
+  cursor: pointer;
+  color: tomato;
+}
+.edit-bill .notice, .edit-bill .alert {
+  font-size: 16px;
+}
+
 /* margin fix for mobile*/
 table {
   margin-left: -20px;
